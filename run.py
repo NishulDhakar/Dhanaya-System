@@ -4,6 +4,7 @@ from data.data_loader import fetch_data, load_data
 from indicators.sma import sma
 from indicators.rsi import rsi
 from indicators.macd import macd
+from strategies.rsi_strategy import RSIStrategy
 
 
 # ------------------
@@ -35,6 +36,13 @@ def main():
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
     df.to_csv(PROCESSED_DIR / f"{SYMBOL}.csv", index=False)
 
+    # 6. Run strategy
+    strategy = RSIStrategy()
+    result = strategy.generate_signal(df)
+
+    # 7. Print decision (ONLY for now)
+    print("Latest Signal:", result["signal"])
+    print("Reason:", result["reason"])
 
 if __name__ == "__main__":
     main()
