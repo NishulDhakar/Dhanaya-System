@@ -1,30 +1,30 @@
 # Deterministic Paper Trading & Analytics Engine
 
-A **deterministic, auditable paper trading engine** built to study trading behavior, risk, and system correctness before optimization or machine learning.
+A **deterministic, auditable paper trading engine** designed to study trading behavior, risk, and system correctness **before** optimization, machine learning, or live trading.
 
-The focus is **trust, reproducibility, and explainability**, not profitability.
+This project prioritizes **trust, reproducibility, and explainability** over profitability.
 
 ---
 
 ## Purpose
 
-Most trading systems add ML too early.
+Most trading systems introduce machine learning too early.
 
-This project enforces a simple rule:
+This project follows a strict principle:
 
 > If a system cannot explain *why* it traded and *how* capital moved,  
-> ML trained on it will be unreliable.
+> any machine learning trained on it will be unreliable.
 
-The engine is therefore built **correct first**, not profitable first.
+The engine is therefore built **correct-first**, not profit-first.
 
 ---
 
 ## What This System Is
 
 - Deterministic (same input → same output)
-- Auditable (every trade and decision logged)
-- Replayable (historical data backtests)
-- Research-ready (ML/GenAI can be layered later)
+- Auditable (every trade and decision is logged)
+- Replayable (historical backtesting)
+- Research-ready (ML / GenAI can be layered later)
 
 ## What This System Is Not
 
@@ -39,36 +39,36 @@ Losses are **expected** and treated as data, not bugs.
 ## Architecture Overview
 
 Market Data
-↓
+    ↓
 Indicators
-↓
+    ↓
 Rule-Based Strategy
-↓
+    ↓
 PaperTrader
-↓
+    ↓
 Broker (Deterministic Execution)
-↓
+    ↓
 Portfolio
-├── Open Positions
-├── Closed Trades (immutable)
-└── Logs (CSV)
-↓
+    ├── Open Positions
+    ├── Closed Trades (immutable)
+    └── Logs (CSV)
+    ↓
 Analytics
 
 
-Each layer has **one responsibility**.
+Each layer has **one responsibility** and no hidden side effects.
 
 ---
 
 ## Trade Lifecycle
 
-1. Order created  
-2. Execution simulated (deterministic)  
-3. Position opened  
-4. Position closed  
-5. Trade created (immutable)  
-6. Trade logged to CSV  
-7. Analytics consume logs  
+1. Order is created  
+2. Execution is simulated (deterministic)  
+3. Position is opened  
+4. Position is closed  
+5. Trade object is created (immutable)  
+6. Trade is logged to CSV  
+7. Analytics consume logged trades  
 
 PnL is calculated **only at trade close**.
 
@@ -76,78 +76,99 @@ PnL is calculated **only at trade close**.
 
 ## System Guarantees
 
-- No negative cash
-- No zero or negative quantity
-- No duplicate open positions
-- No NaN prices
+The engine enforces strict invariants:
+
+- No negative cash balances  
+- No zero or negative trade quantities  
+- No duplicate open positions  
+- No NaN prices  
 - No silent failures (fail fast)
 
-Invalid states raise exceptions immediately.
+Any violation raises an exception immediately.
 
 ---
 
 ## Analytics Implemented
 
-- Total trades
-- Win rate
-- Average win / loss
-- Maximum drawdown
-- Sharpe ratio
-- Equity curve
+- Total trades  
+- Win rate  
+- Average win / loss  
+- Maximum drawdown  
+- Sharpe ratio  
+- Equity curve over time  
 
-All analytics are derived from **logged trades**.
+All analytics are derived from **logged trades**, not in-memory assumptions.
 
 ---
 
 ## Logging (Single Source of Truth)
 
-`logs/trades.csv` records for each trade:
-- timestamp
-- symbol
-- quantity
-- entry & exit price
-- pnl
-- entry & exit reason
-- stop loss distance
-- capital at trade
+### Trade Log (`logs/trades.csv`)
 
-This file is:
-- the ML dataset
-- the audit trail
-- the behavioral memory
+Each closed trade records:
+
+- timestamp  
+- symbol  
+- quantity  
+- entry price  
+- exit price  
+- pnl  
+- entry reason  
+- exit reason  
+- stop loss distance  
+- capital at trade  
+
+This file acts as:
+- the ML dataset  
+- the audit trail  
+- the behavioral memory  
 
 ---
 
 ## Validation Philosophy
 
-The system is correct only if it passes:
-- Zero-trade strategy
-- Flat market
-- Trending market
-- Volatile market
-- Stress tests
+The system is considered **correct** only if it passes:
 
-Profitability is **not** a validation requirement.
+- Zero-trade scenario (strategy always returns HOLD)
+- Flat market data
+- Trending market data
+- Volatile market data
+- Stress tests (frequent signals, tight stops)
 
----
-
-## ML & GenAI (Deferred by Design)
-
-ML and GenAI are layers, not foundations.
-
-- ML answers: *When should I trust a rule?*
-- GenAI answers: *Why is the system behaving this way?*
-
-They will be added **only after the core is locked and validated**.
+Profitability is **not** a validation criterion at this stage.
 
 ---
 
-## Status
+## Machine Learning & GenAI (Deferred by Design)
 
-- Core engine: complete
-- Deterministic execution: complete
-- Logging & analytics: complete
+ML and GenAI are **layers, not foundations**.
+
+They answer different questions:
+
+- **ML:** When should a rule be trusted?  
+- **GenAI:** Why is the system behaving this way?  
+
+They will be added **only after the core system is frozen and validated**.
+
+---
+
+## Project Status
+
+- Core trading engine: complete  
+- Deterministic execution: complete  
+- Risk management & position sizing: complete  
+- Trade & decision logging: complete  
+- Analytics engine: complete  
 - Core version: `core-v1.0` (frozen)
+
+---
+
+## Intended Use
+
+- Learning how real trading systems are engineered  
+- Demonstrating system design and correctness  
+- Creating clean datasets for ML research  
+- Interview-ready backend / systems project  
 
 ---
 
@@ -155,5 +176,5 @@ They will be added **only after the core is locked and validated**.
 
 > Trust comes before intelligence.
 
-Only a trustworthy system deserves ML.
+Only a trustworthy system deserves machine learning.
 
