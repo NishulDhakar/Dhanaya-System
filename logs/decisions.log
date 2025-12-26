@@ -1,0 +1,9 @@
+import json
+
+with open("logs/decisions.log", "a") as f:
+    f.write(json.dumps({
+        "timestamp": str(data_row.name),
+        "signal": signal,
+        "reason": reason,
+        "approved": True
+    }) + "\n")

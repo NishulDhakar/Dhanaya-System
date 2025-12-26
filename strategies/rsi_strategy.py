@@ -6,8 +6,8 @@ class RSIStrategy(Strategy):
     def __init__(self, rsi_col: str = "RSI_14"):
         self.rsi_col = rsi_col
 
-    def generate_signal(self, data: pd.DataFrame):
-        latest_rsi = data[self.rsi_col].iloc[-1]
+    def generate_signal(self, data: pd.Series):
+        latest_rsi = data[self.rsi_col]
 
         if latest_rsi < 30:
             return {
