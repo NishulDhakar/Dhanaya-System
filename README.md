@@ -1,127 +1,115 @@
-# 🧠 Deterministic Paper Trading & Analytics Engine
+# Deterministic Paper Trading & Analytics Engine
 
-> A **research-grade, deterministic paper trading engine** built to study trading behavior, risk, and system correctness — not to chase short-term profits.
+A **deterministic, auditable paper trading engine** built to study trading behavior, risk, and system correctness before optimization or machine learning.
 
-This project focuses on **correctness, reproducibility, and explainability** before optimization or machine learning.
-
----
-
-## 🚀 Why This Project Exists
-
-Most trading projects jump directly to:
-- ML predictions
-- complex indicators
-- profitability claims
-
-This engine does the opposite.
-
-**Core philosophy:**
-
-> If a system cannot explain *why* it traded and *how* money moved,  
-> any ML trained on it will be garbage.
-
-So this project builds a **solid, auditable foundation** first.
+The focus is **trust, reproducibility, and explainability**, not profitability.
 
 ---
 
-## 🧩 What This System Is (and Is Not)
+## Purpose
 
-### ✅ This system **IS**
+Most trading systems add ML too early.
+
+This project enforces a simple rule:
+
+> If a system cannot explain *why* it traded and *how* capital moved,  
+> ML trained on it will be unreliable.
+
+The engine is therefore built **correct first**, not profitable first.
+
+---
+
+## What This System Is
+
 - Deterministic (same input → same output)
-- Auditable (every trade & decision logged)
+- Auditable (every trade and decision logged)
 - Replayable (historical data backtests)
-- Research-ready (ML & GenAI can plug in later)
+- Research-ready (ML/GenAI can be layered later)
 
-### ❌ This system is **NOT**
-- A live trading bot
-- A profit-optimized strategy
-- An ML-first system (by design)
+## What This System Is Not
 
-Losses are **expected and valuable** — they are labeled data, not bugs.
+- Not a live trading bot  
+- Not a profit-optimized strategy  
+- Not ML-driven (by design)
+
+Losses are **expected** and treated as data, not bugs.
 
 ---
 
-## 🏗️ System Architecture
+## Architecture Overview
 
 Market Data
-   ↓
+↓
 Indicators
-   ↓
-Strategy (rules only)
-   ↓
+↓
+Rule-Based Strategy
+↓
 PaperTrader
-   ↓
-Broker (deterministic)
-   ↓
+↓
+Broker (Deterministic Execution)
+↓
 Portfolio
-   ├── Positions (open)
-   ├── Trades (closed)
-   └── Logs (CSV)
-   ↓
+├── Open Positions
+├── Closed Trades (immutable)
+└── Logs (CSV)
+↓
 Analytics
 
-Each layer has **one responsibility** and no hidden side effects.
+
+Each layer has **one responsibility**.
 
 ---
 
-## 🔁 Trade Lifecycle (Explicit & Safe)
+## Trade Lifecycle
 
-1. **Order Created**
-2. **Execution Simulated**
-   - deterministic slippage
-   - deterministic fees
-3. **Position Opened**
-4. **Position Closed**
-5. **Trade Created (immutable)**
-6. **Trade Logged to CSV**
-7. **Analytics Consume Logs**
+1. Order created  
+2. Execution simulated (deterministic)  
+3. Position opened  
+4. Position closed  
+5. Trade created (immutable)  
+6. Trade logged to CSV  
+7. Analytics consume logs  
 
-> PnL is computed **only at close**, never before.
+PnL is calculated **only at trade close**.
 
 ---
 
-## 🛡️ System Guarantees (Hard Rules)
+## System Guarantees
 
-- ❌ No negative cash allowed
-- ❌ No zero or negative quantity trades
-- ❌ No duplicate open positions
-- ❌ No NaN prices
-- ❌ No silent failures (fail fast)
+- No negative cash
+- No zero or negative quantity
+- No duplicate open positions
+- No NaN prices
+- No silent failures (fail fast)
 
-If any rule is violated → the system **raises an exception immediately**.
+Invalid states raise exceptions immediately.
 
 ---
 
-## 📊 Analytics Implemented
+## Analytics Implemented
 
 - Total trades
 - Win rate
 - Average win / loss
-- Max drawdown
+- Maximum drawdown
 - Sharpe ratio
-- Equity curve over time
+- Equity curve
 
-Analytics are **derived from logs**, not from in-memory guesses.
+All analytics are derived from **logged trades**.
 
 ---
 
-## 🗂️ Logging (Single Source of Truth)
+## Logging (Single Source of Truth)
 
-### Trade Log (`logs/trades.csv`)
-Each closed trade records:
-
-| Field | Purpose |
-|-----|--------|
-| timestamp | sequencing |
-| symbol | multi-asset ready |
-| quantity | risk visibility |
-| entry_price | execution |
-| exit_price | outcome |
-| pnl | performance |
-| reason_entry | explainability |
-| reason_exit | explainability |
-| stop_loss_distance | risk context |
-| capital_at_trade | system state |
+`logs/trades.csv` records for each trade:
+- timestamp
+- symbol
+- quantity
+- entry & exit price
+- pnl
+- entry & exit reason
+- stop loss distance
+- capital at trade
 
 This file is:
 - the ML dataset
@@ -130,65 +118,42 @@ This file is:
 
 ---
 
-## 🧪 Validation Philosophy
+## Validation Philosophy
 
-The system is considered **correct** only if it passes:
+The system is correct only if it passes:
+- Zero-trade strategy
+- Flat market
+- Trending market
+- Volatile market
+- Stress tests
 
-- Zero-trade scenario (HOLD-only strategy)
-- Flat market data
-- Trending market data
-- Volatile market data
-- Stress tests (frequent signals, tight stops)
-
-Profitability is **not** a validation criterion at this stage.
+Profitability is **not** a validation requirement.
 
 ---
 
-## 🧠 Why ML Is Not Added Yet
+## ML & GenAI (Deferred by Design)
 
-ML and GenAI are **layers**, not foundations.
+ML and GenAI are layers, not foundations.
 
-They answer different questions:
-
-- **ML:** “When should I trust a rule?”
-- **GenAI:** “Why am I behaving this way as a trader?”
-
-Adding them too early would:
-- amplify noise
-- hide bugs
-- destroy interpretability
+- ML answers: *When should I trust a rule?*
+- GenAI answers: *Why is the system behaving this way?*
 
 They will be added **only after the core is locked and validated**.
 
 ---
 
-## 🧭 Roadmap (High-Level)
+## Status
 
-- ✅ Core Engine (DONE)
-- ✅ Deterministic Execution (DONE)
-- ✅ Trade & Decision Logging (DONE)
-- ✅ Analytics (DONE)
-- 🔒 Core Freeze (`core-v1.0`)
-- 🧪 Multi-run Validation
-- 🤖 ML Phase 1: Trade Outcome Classification
-- 🧠 GenAI Phase: Behavioral Analysis & Coaching
+- Core engine: complete
+- Deterministic execution: complete
+- Logging & analytics: complete
+- Core version: `core-v1.0` (frozen)
 
 ---
 
-## 🎯 Intended Use
+## Final Principle
 
-- Learning how real trading systems are built
-- Demonstrating system design & correctness
-- Creating clean datasets for ML research
-- Interview-ready backend project
-
----
-
-## 📌 Final Note
-
-> This project optimizes for **trust before intelligence**.
+> Trust comes before intelligence.
 
 Only a trustworthy system deserves ML.
-
----
 
