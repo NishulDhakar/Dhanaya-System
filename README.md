@@ -1,4 +1,4 @@
-# Deterministic Paper Trading & Analytics Engine
+# Deterministic Paper Trading Engine
 
 A **deterministic, auditable paper trading engine** designed to study trading behavior, risk, and system correctness **before** optimization, machine learning, or live trading.
 
@@ -179,6 +179,7 @@ They will be added **only after the core system is frozen and validated**.
 > Trust comes before intelligence.
 
 Only a trustworthy system deserves machine learning.
+
 
 
 
